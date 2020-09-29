@@ -24,6 +24,9 @@ def softmax_loss_naive(W, X, y, reg):
     # Initialize the loss and gradient to zero.
     loss = 0.0
     dW = np.zeros_like(W)
+    D , C = W.shape
+    N     = X.shape[0] 
+
 
     #############################################################################
     # TODO: Compute the softmax loss and its gradient using explicit loops.     #
@@ -33,7 +36,28 @@ def softmax_loss_naive(W, X, y, reg):
     #############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    f = np.dot(X, W)
+
+    f -= np.max(f, axis=1, keepdims=True)
+    e_f = np.exp(f)
+    sum_e_f = np.sum(e_f, axis=1, keepdims=True)
+    p = e_f / sum_e_f
+    L = - np.log( p[np.arange(N), y] )
+
+    loss = np.sum(L, axis=0)
+
+    # indicator[np.arange(N), y] = 1.0
+    for i in range(N):
+      for c in range(C):
+        dW[:, c] += p[i, c]*X[i].T
+      dW[:, y[i]] -= X[i].T
+
+    
+    loss /= N 
+    dW /= N 
+
+    loss += reg*np.sum(W*W)
+    dW += 2*reg*W
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
@@ -49,7 +73,8 @@ def softmax_loss_vectorized(W, X, y, reg):
     # Initialize the loss and gradient to zero.
     loss = 0.0
     dW = np.zeros_like(W)
-
+    D , C = W.shape
+    N     = X.shape[0] 
     #############################################################################
     # TODO: Compute the softmax loss and its gradient using no explicit loops.  #
     # Store the loss in loss and the gradient in dW. If you are not careful     #
@@ -58,8 +83,34 @@ def softmax_loss_vectorized(W, X, y, reg):
     #############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    # f 
 
+    f = np.dot(X, W)
+
+    f -= np.max(f, axis=1, keepdims=True)
+    e_f = np.exp(f)
+    sum_e_f = np.sum(e_f, axis=1, keepdims=True)
+    p = e_f / sum_e_f
+    L = - np.log( p[np.arange(N), y] )
+
+    loss = np.sum(L, axis=0)
+
+    # p   : N x C
+    # X[i]: 1 x D
+    # X   : N x D
+    # W   : D x C
+
+    dp = np.zeros_like(p)
+    dp = p 
+    dp[range(N), y] -= 1
+
+    dW = np.dot(X.T, dp)
+
+    loss /= N 
+    dW /= N 
+
+    loss += reg*np.sum(W*W)
+    dW += 2*reg*W
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     return loss, dW
