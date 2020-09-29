@@ -114,9 +114,10 @@ Details about this assignment can be found [on the course webpage](http://cs231n
 - The cross-entropy between a 'true' distribution <img src="https://i.upmath.me/svg/p" alt="p" /> and an estimated distribution <img src="https://i.upmath.me/svg/q" alt="q" /> is defined as:
   
 <img src="https://i.upmath.me/svg/%0A%20%20H(p%2Cq)%20%3D%20-%5Csum_x%20p(x)%20log%20q(x)%0A%20%20" alt="
-  H(p,q) = -\sum_x p(x) log q(x)
+  H(p,q) = -\sum_x p(x) log (q(x))
   " />
-- The Softmax classifier is hence minimizing the cross-entropy between the estimated class probabilities (<img src="https://i.upmath.me/svg/q%3D%5Cfrac%7Be%5E%7Bf_%7Byi%7D%7D%7D%7B%E2%88%91_j%20e%5E%7Bf_j%7D%7D" alt="q=\frac{e^{f_{yi}}}{\sum_j e^{f_j}}" /> as seen above) and the “true” distribution, which in this interpretation is the distribution where all probability mass is on the correct class (i.e.<img src="https://i.upmath.me/svg/p%3D%5B0%2C%E2%80%A61%2C%E2%80%A6%2C0%5D" alt="p=[0,…1,…,0]" /> contains a single <img src="https://i.upmath.me/svg/%201" alt=" 1" /> at the <img src="https://i.upmath.me/svg/y_i" alt="y_i" /> <img src="https://i.upmath.me/svg/i-th" alt="i-th" /> position.)
+- The Softmax classifier is hence minimizing the cross-entropy between the estimated class probabilities (<img src="https://i.upmath.me/svg/q%3D%5Cfrac%7Be%5E%7Bf_%7Byi%7D%7D%7D%7B%E2%88%91_j%20e%5E%7Bf_j%7D%7D" alt="q=\frac{e^{f_{y_i}}}{\sum_j{e^{f_j}}" /> 
+as seen above) and the “true” distribution, which in this interpretation is the distribution where all probability mass is on the correct class (i.e.<img src="https://i.upmath.me/svg/p%3D%5B0%2C%E2%80%A61%2C%E2%80%A6%2C0%5D" alt="p=[0,…1,…,0]" /> contains a single <img src="https://i.upmath.me/svg/%201" alt=" 1" /> at the <img src="https://i.upmath.me/svg/y_i" alt="y_i" /> <img src="https://i.upmath.me/svg/i-th" alt="i-th" /> position.)
 - Since the cross-entropy can be written in terms of entropy and the Kullback-Leibler divergence as <img src="https://i.upmath.me/svg/H(p%2Cq)%3DH(p)%2BDKL(p%7C%7Cq)" alt="H(p,q)=H(p)+DKL(p||q)" />, and the entropy of the delta function pp is zero, this is also equivalent to minimizing the KL divergence between the two distributions.
 
 #### Probabilistic Interpretation
