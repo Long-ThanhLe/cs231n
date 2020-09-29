@@ -33,6 +33,8 @@ Details about this assignment can be found [on the course webpage](http://cs231n
 
 ###### Nearest Neighbor Classifier
 
+
+This is on a separate line
 - Take a test image, compare it to every single one of the training images,
   and predict the label of the closest training image.
 - The choices of distance: $L1$, $L2$, ...
@@ -62,7 +64,7 @@ Disadvantage:
 
 ##### Linear mapping
 
-- $f(x_i,W,b)=Wx_i+b$
+- $ f(x_i,W,b)=Wx_i+b$
 - The single matrix multiplication $W_xi$ is effectively evaluating 10 separate classifiers in parallel (one for each class), where each classifier is a row of **W**
 -
 
