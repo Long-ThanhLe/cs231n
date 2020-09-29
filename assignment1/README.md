@@ -48,7 +48,7 @@ Details about this assignment can be found [on the course webpage](http://cs231n
 ### Linear mapping
 
 - <img src="https://i.upmath.me/svg/f(x_i%2CW%2Cb)%3DWx_i%2Bb" alt="f(x_i,W,b)=Wx_i+b" />
-- The single matrix multiplication <img src="https://i.upmath.me/svg/W_xi" alt="W_xi" /> is effectively evaluating 10 separate classifiers in parallel (one for each class), where each classifier is a row of <img src="https://i.upmath.me/svg/W" alt="W" />.
+- The single matrix multiplication <img src="https://i.upmath.me/svg/W%7Bx_i%7D" alt="W{x_i}" /> is effectively evaluating 10 separate classifiers in parallel (one for each class), where each classifier is a row of <img src="https://i.upmath.me/svg/W" alt="W" />.
 ### Interpreting a linear classifier
 
 **As high-dimensional points**
@@ -61,15 +61,15 @@ Details about this assignment can be found [on the course webpage](http://cs231n
 - Each row of <img src="https://i.upmath.me/svg/W" alt="W" /> corresponds to a *template* (or sometimes also called a *prototype*) for one of the classes
 - The score of each class for an image is then obtained by comparing each template with the image using an *inner product* (or *dot product*) one by one to find the one that “fits” best.
 **Bias trick**
-- <img src="https://i.upmath.me/svg/f(x_i%2CW%2Cb)%3DWx_i%2Bb" alt="f(x_i,W,b)=Wx_i+b" /> <img src="https://i.upmath.me/svg/-%3E" alt="-&gt;" /> <img src="https://i.upmath.me/svg/f(x_i%2CW)%3DWx_i" alt="f(x_i,W)=Wx_i" />
+- <img src="https://i.upmath.me/svg/f(x_i%2CW%2Cb)%3DWx_i%2Bb" alt="f(x_i,W,b)=Wx_i+b" /> -> <img src="https://i.upmath.me/svg/f(x_i%2CW)%3DWx_i" alt="f(x_i,W)=Wx_i" />
 
 ### Loss function
 
 #### mSVM loss
 
 - The score function takes the pixels and computes the vector <img src="https://i.upmath.me/svg/f(x_i%2CW)" alt="f(x_i,W)" /> of class scores, which we will abbreviate to <img src="https://i.upmath.me/svg/s" alt="s" /> (short for scores).
-- <img src="https://i.upmath.me/svg/Li%3D%5Csum_%7Bj%E2%89%A0yi%7D%20max(%200%2C%20s_%7Bj%7D%E2%88%92s_%7Byi%7D%2B%5CDelta%20)" alt="Li=\sum_{j≠yi} max( 0, s_{j}−s_{yi}+\Delta )" />
-- In linear classifier: <img src="https://i.upmath.me/svg/Li%3D%5Csum_%7Bj%E2%89%A0yi%7D%20max(%200%2C%20w%5ET_%7Bj%7Dx_i%E2%88%92w%5ET_%7By_i%7Dx_i%2B%20%5CDelta%20)" alt="Li=\sum_{j≠yi} max( 0, w^T_{j}x_i−w^T_{y_i}x_i+ \Delta )" />,  <img src="https://i.upmath.me/svg/w_i" alt="w_i" /> is the i_th row of <img src="https://i.upmath.me/svg/W" alt="W" /> reshaped as a column
+- <img src="https://i.upmath.me/svg/L_i%3D%20%5Csum_%7Bj%E2%89%A0yi%7D%20max(%200%2C%20s_j-s_%7By_i%7D%20%2B%20%5CDelta%20)" alt="L_i= \sum_{j≠yi} max( 0, s_j-s_{y_i} + \Delta )" />
+- In linear classifier: <img src="https://i.upmath.me/svg/Li%3D%5Csum_%7Bj%E2%89%A0yi%7D%20max(%200%2C%20w%5ET_%7Bj%7Dx_%7Bi%7D-w%5ET_%7By_i%7Dx_i%2B%20%5CDelta%20)" alt="Li=\sum_{j≠yi} max( 0, w^T_{j}x_{i}-w^T_{y_i}x_i+ \Delta )" />,  <img src="https://i.upmath.me/svg/w_i" alt="w_i" /> is the i_th row of <img src="https://i.upmath.me/svg/W" alt="W" /> reshaped as a column
 - The theshold at zero <img src="https://i.upmath.me/svg/max(0%2C-)" alt="max(0,-)" /> function is called **hingle loss**
 - **Squared hingle loss SVM** (L2-SVM): <img src="https://i.upmath.me/svg/max(0%2C-)%5E2" alt="max(0,-)^2" />
 - Regularization:
@@ -103,19 +103,12 @@ Details about this assignment can be found [on the course webpage](http://cs231n
   <img src="https://i.upmath.me/svg/%0A%20%20H(p%2Cq)%20%3D%20-%5Csum_x%20p(x)%20log%20q(x)%0A%20%20" alt="
   H(p,q) = -\sum_x p(x) log q(x)
   " />
-- The Softmax classifier is hence minimizing the cross-entropy between the estimated class probabilities (<img src="https://i.upmath.me/svg/q%3D%5Cfrac%7Be%5E%7Bf_%7Byi%7D%7D%7D%7B%E2%88%91_j%20e%5E%7Bf_j%7D%7D" alt="q=\frac{e^{f_{yi}}}{∑_j e^{f_j}}" /> as seen above) and the “true” distribution, which in this interpretation is the distribution where all probability mass is on the correct class (i.e.<img src="https://i.upmath.me/svg/p%3D%5B0%2C%E2%80%A61%2C%E2%80%A6%2C0%5D" alt="p=[0,…1,…,0]" /> contains a single <img src="https://i.upmath.me/svg/%201" alt=" 1" /> at the <img src="https://i.upmath.me/svg/y_i" alt="y_i" /> i-th position.)
+- The Softmax classifier is hence minimizing the cross-entropy between the estimated class probabilities (<img src="https://i.upmath.me/svg/q%3D%5Cfrac%7Be%5E%7Bf_%7Byi%7D%7D%7D%7B%E2%88%91_j%20e%5E%7Bf_j%7D%7D" alt="q=\frac{e^{f_{yi}}}{∑_j e^{f_j}}" /> as seen above) and the “true” distribution, which in this interpretation is the distribution where all probability mass is on the correct class (i.e.<img src="https://i.upmath.me/svg/p%3D%5B0%2C%E2%80%A61%2C%E2%80%A6%2C0%5D" alt="p=[0,…1,…,0]" /> contains a single <img src="https://i.upmath.me/svg/%201" alt=" 1" /> at the <img src="https://i.upmath.me/svg/y_i" alt="y_i" /> <img src="https://i.upmath.me/svg/i-th" alt="i-th" /> position.)
 - Since the cross-entropy can be written in terms of entropy and the Kullback-Leibler divergence as <img src="https://i.upmath.me/svg/H(p%2Cq)%3DH(p)%2BDKL(p%7C%7Cq)" alt="H(p,q)=H(p)+DKL(p||q)" />, and the entropy of the delta function pp is zero, this is also equivalent to minimizing the KL divergence between the two distributions.
 
 #### Probabilistic Interpretation
 
-- We can see 
-
-  <img src="https://i.upmath.me/svg/%0A%20%20%5Cfrac%7Be%5E%7Bf_%7By_i%7D%7D%7D%7B%5Csum_j%20e%5E%7Bf_j%7D%7D%0A%20%20" alt="
-  \frac{e^{f_{y_i}}}{\sum_j e^{f_j}}
-  " />
-
-
-  as the normalized probability assigned to the correct label <img src="https://i.upmath.me/svg/y_i" alt="y_i" /> given the image <img src="https://i.upmath.me/svg/x_i" alt="x_i" />
+- We can see <img src="https://i.upmath.me/svg/%5Cfrac%7Be%5E%7Bf_%7By_i%7D%7D%7D%7B%5Csum_j%20e%5E%7Bf_j%7D%7D" alt="\frac{e^{f_{y_i}}}{\sum_j e^{f_j}}" /> as the normalized probability assigned to the correct label <img src="https://i.upmath.me/svg/y_i" alt="y_i" /> given the image <img src="https://i.upmath.me/svg/x_i" alt="x_i" />
 - In the probabilistic interpretation, we are therefore minimizing the negative log likelihood of the correct class, which can be interpreted as performing *Maximum Likelihood Estimation* (MLE)
 - A nice feature of this view is that we can now also interpret the regularization term <img src="https://i.upmath.me/svg/R(W)" alt="R(W)" /> in the full loss function as coming from a Gaussian prior over the weight matrix <img src="https://i.upmath.me/svg/W" alt="W" />, where instead of MLE we are performing the *Maximum a posteriori* (MAP) estimation
 
