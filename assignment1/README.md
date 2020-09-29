@@ -1,0 +1,175 @@
+Details about this assignment can be found [on the course webpage](http://cs231n.github.io/), under Assignment #1 of Spring 2019.
+
+# Note
+
+## 1. Image classification
+
+### Challenges:
+
+- Viewpoint variation: A single instance of an object can be oriented in many ways with respect to the camera.
+- Scale variation
+- Deformation: Many objects of interest are not rigid bodies and can be
+  deformed in extreme ways
+- Occlusion: The objects of interest can be occluded. Sometimes only a
+  small portion of an object (as little as few pixels) could be visible
+- Illumination conditions: The effects of illumination are drastic on the pixel level.
+- Background clutter: The objects of interest may blend into their environment, making them hard to identify.
+- Intra-class variation: The classes of interest can often be relatively broad, such as chairs. There are many different types of these objects, each with their own appearance
+
+### Data-driven approach:
+
+- Relies on first accumulating a *training dataset* of labeled images.
+
+### CIFAR-10
+
+- 60,000 images with size 32x32, 10 classes.
+- Training set: 50,000
+- Test set: 10,000
+
+### Nearest Neighbor Classifier
+- Take a test image, compare it to every single one of the training images,
+  and predict the label of the closest training image.
+- The choices of distance: <img src="https://i.upmath.me/svg/L1" alt="L1" />, <img src="https://i.upmath.me/svg/L2" alt="L2" />, ...
+
+### k-Nearest Neighbor Classifier
+- Instead of finding the single closest image in the training set, we will find the top **k** closest images and have them vote on the label of the test image.
+### Validation sets for Hyperparameter tuning
+- Split training set
+- Cross-validation: Instead of arbitrarily picking the first 1000 data points to be the validation set and rest training set, you can get a better and less noisy estimate of how well a certain value of <img src="https://i.upmath.me/svg/k" alt="k" /> works by iterating over different validation sets and averaging the performance across these.
+### Pros and Cons of Nearest Neighbor classifier
+#### Advantage
+- Simple to implement and understand
+- Classifier takes no time to train
+#### Disadvantage
+- Computational cost at test time
+- Distances over high-dimensional spaces can be very counter-intuitive
+## 2. Linear Classification
+
+### Linear mapping
+
+- <img src="https://i.upmath.me/svg/f(x_i%2CW%2Cb)%3DWx_i%2Bb" alt="f(x_i,W,b)=Wx_i+b" />
+- The single matrix multiplication <img src="https://i.upmath.me/svg/W_xi" alt="W_xi" /> is effectively evaluating 10 separate classifiers in parallel (one for each class), where each classifier is a row of <img src="https://i.upmath.me/svg/W" alt="W" />.
+### Interpreting a linear classifier
+
+**As high-dimensional points**
+
+- Since the images are stretched into high-dimensional column vectors, we can interpret each image as a single point in this space
+- Since we defined the score of each class as a weighted sum of all image pixels, each class score is a linear function over this space
+
+**As template matching**
+
+- Each row of <img src="https://i.upmath.me/svg/W" alt="W" /> corresponds to a *template* (or sometimes also called a *prototype*) for one of the classes
+- The score of each class for an image is then obtained by comparing each template with the image using an *inner product* (or *dot product*) one by one to find the one that “fits” best.
+**Bias trick**
+- <img src="https://i.upmath.me/svg/f(x_i%2CW%2Cb)%3DWx_i%2Bb" alt="f(x_i,W,b)=Wx_i+b" /> <img src="https://i.upmath.me/svg/-%3E" alt="-&gt;" /> <img src="https://i.upmath.me/svg/f(x_i%2CW)%3DWx_i" alt="f(x_i,W)=Wx_i" />
+
+### Loss function
+
+#### mSVM loss
+
+- The score function takes the pixels and computes the vector <img src="https://i.upmath.me/svg/f(x_i%2CW)" alt="f(x_i,W)" /> of class scores, which we will abbreviate to <img src="https://i.upmath.me/svg/s" alt="s" /> (short for scores).
+- <img src="https://i.upmath.me/svg/Li%3D%5Csum_%7Bj%E2%89%A0yi%7D%20max(%200%2C%20s_%7Bj%7D%E2%88%92s_%7Byi%7D%2B%5CDelta%20)" alt="Li=\sum_{j≠yi} max( 0, s_{j}−s_{yi}+\Delta )" />
+- In linear classifier: <img src="https://i.upmath.me/svg/Li%3D%5Csum_%7Bj%E2%89%A0yi%7D%20max(%200%2C%20w%5ET_%7Bj%7Dx_i%E2%88%92w%5ET_%7By_i%7Dx_i%2B%20%5CDelta%20)" alt="Li=\sum_{j≠yi} max( 0, w^T_{j}x_i−w^T_{y_i}x_i+ \Delta )" />,  <img src="https://i.upmath.me/svg/w_i" alt="w_i" /> is the i_th row of <img src="https://i.upmath.me/svg/W" alt="W" /> reshaped as a column
+- The theshold at zero <img src="https://i.upmath.me/svg/max(0%2C-)" alt="max(0,-)" /> function is called **hingle loss**
+- **Squared hingle loss SVM** (L2-SVM): <img src="https://i.upmath.me/svg/max(0%2C-)%5E2" alt="max(0,-)^2" />
+- Regularization:
+  - There might be many similar **W** that correctly classify the examples
+  - if some parameters **W** correctly classify all examples (so loss is zero for each example), then any multiple of these parameters <img src="https://i.upmath.me/svg/%CE%BBW" alt="λW" /> where <img src="https://i.upmath.me/svg/%CE%BB%3E1" alt="λ&gt;1" /> will also give zero loss because this transformation uniformly stretches all score magnitudes and hence also their absolute differences
+  - -> Extending the loss function with a **regularization penalty** <img src="https://i.upmath.me/svg/R(W)" alt="R(W)" />
+  - <img src="https://i.upmath.me/svg/L2" alt="L2" /> penalty: <img src="https://i.upmath.me/svg/R(W)%20%3D%20%5Csum_k%5Csum_lW%5E2_%7Bk%2Cl%7D" alt="R(W) = \sum_k\sum_lW^2_{k,l}" />
+  - Loss becomes:
+    <img src="https://i.upmath.me/svg/L%20%3D%20%5Cfrac%7B1%7D%7BN%7D%5Csum_iL_i%20%2B%20%5Clambda%20R(W)" alt="L = \frac{1}{N}\sum_iL_i + \lambda R(W)" />
+  - Max margin property in SVM: **CS229**
+  - Generalization property -> less overfitting
+
+### Practical Considerations
+
+- Setting <img src="https://i.upmath.me/svg/%5CDelta" alt="\Delta" />:
+  - This hyperparameter can safely be set to <img src="https://i.upmath.me/svg/%CE%94%3D1.0" alt="Δ=1.0" /> in all cases.
+  - The hyperparameters <img src="https://i.upmath.me/svg/%5CDelta" alt="\Delta" /> and <img src="https://i.upmath.me/svg/%CE%BB" alt="λ" /> seem like two different hyperparameters, but in fact, they both control the same tradeoff: The tradeoff between the data loss and the regularization loss in the objective
+  - The exact value of the margin between the scores (e.g. <img src="https://i.upmath.me/svg/%CE%94%3D1" alt="Δ=1" />, or <img src="https://i.upmath.me/svg/%CE%94%3D100" alt="Δ=100" />) is in some sense meaningless because the weights can shrink or stretch the differences arbitrarily.
+
+### Softmax classifier
+
+- Cross-entropy loss:
+  <img src="https://i.upmath.me/svg/%0A%20%20L_i%20%3D%20-log(%5Cfrac%7Be%5E%7Bf_%7By_i%7D%7D%7D%7B%5Csum_j%20e%5E%7Bf_j%7D%7D)%20%20%3D%20-f_%7By_i%7D%20%2B%20log%5Csum_j%20e%5E%7Bf_j%7D%0A%20%20" alt="
+  L_i = -log(\frac{e^{f_{y_i}}}{\sum_j e^{f_j}})  = -f_{y_i} + log\sum_j e^{f_j}
+  " />
+- <img src="https://i.upmath.me/svg/f_j" alt="f_j" /> is the j-th element of the vector of class scores <img src="https://i.upmath.me/svg/f" alt="f" />
+
+#### Information theory view:
+
+- The cross-entropy between a 'true' distribution <img src="https://i.upmath.me/svg/p" alt="p" /> and an estimated distribution <img src="https://i.upmath.me/svg/q" alt="q" /> is defined as:
+  <img src="https://i.upmath.me/svg/%0A%20%20H(p%2Cq)%20%3D%20-%5Csum_x%20p(x)%20log%20q(x)%0A%20%20" alt="
+  H(p,q) = -\sum_x p(x) log q(x)
+  " />
+- The Softmax classifier is hence minimizing the cross-entropy between the estimated class probabilities (<img src="https://i.upmath.me/svg/q%3D%5Cfrac%7Be%5E%7Bf_%7Byi%7D%7D%7D%7B%E2%88%91_j%20e%5E%7Bf_j%7D%7D" alt="q=\frac{e^{f_{yi}}}{∑_j e^{f_j}}" /> as seen above) and the “true” distribution, which in this interpretation is the distribution where all probability mass is on the correct class (i.e.<img src="https://i.upmath.me/svg/p%3D%5B0%2C%E2%80%A61%2C%E2%80%A6%2C0%5D" alt="p=[0,…1,…,0]" /> contains a single <img src="https://i.upmath.me/svg/%201" alt=" 1" /> at the <img src="https://i.upmath.me/svg/y_i" alt="y_i" /> i-th position.)
+- Since the cross-entropy can be written in terms of entropy and the Kullback-Leibler divergence as <img src="https://i.upmath.me/svg/H(p%2Cq)%3DH(p)%2BDKL(p%7C%7Cq)" alt="H(p,q)=H(p)+DKL(p||q)" />, and the entropy of the delta function pp is zero, this is also equivalent to minimizing the KL divergence between the two distributions.
+
+#### Probabilistic Interpretation
+
+- We can see 
+
+  <img src="https://i.upmath.me/svg/%0A%20%20%5Cfrac%7Be%5E%7Bf_%7By_i%7D%7D%7D%7B%5Csum_j%20e%5E%7Bf_j%7D%7D%0A%20%20" alt="
+  \frac{e^{f_{y_i}}}{\sum_j e^{f_j}}
+  " />
+
+
+  as the normalized probability assigned to the correct label <img src="https://i.upmath.me/svg/y_i" alt="y_i" /> given the image <img src="https://i.upmath.me/svg/x_i" alt="x_i" />
+- In the probabilistic interpretation, we are therefore minimizing the negative log likelihood of the correct class, which can be interpreted as performing *Maximum Likelihood Estimation* (MLE)
+- A nice feature of this view is that we can now also interpret the regularization term <img src="https://i.upmath.me/svg/R(W)" alt="R(W)" /> in the full loss function as coming from a Gaussian prior over the weight matrix <img src="https://i.upmath.me/svg/W" alt="W" />, where instead of MLE we are performing the *Maximum a posteriori* (MAP) estimation
+
+### SVM vs Softmax
+
+#### Softmax classifier provides probabilities for each class
+
+#### SVM and Softmax are usually comparable
+
+- Compared to the Softmax classifier, the SVM is a more *local* objective
+  - The SVM does not care about the details of the individual scores: if they were instead [10, -100, -100] or [10, 9, 9] the SVM would be indifferent since the margin of 1 is satisfied and hence the loss is zero
+- The Softmax classifier is never fully happy with the scores it produces: the correct class could always have a higher probability and the incorrect classes always a lower probability and the loss would always get better
+
+## 3. Optimization
+
+### Optimization
+
+#### Random search
+
+- Try random weights and keep track of what works best
+
+#### Random local search
+
+- We will start out with a random $W$, generate random perturbations δWδW to it and if the loss at the perturbed $W+δW$ is lower, we will perform an update
+
+#### Following the gradient
+
+- It turns out that there is no need to randomly search for a good direction: we can compute the *best* direction along which we should change our weight vector that is mathematically guaranteed to be the direction of the steepest descend
+
+### Computing the gradient
+
+#### Computing the gradient numerically with finite differences
+
+- Following the gradient formula we gave above, the code above iterates overall dimensions one by one, makes a small change `h` along that dimension, and calculates the partial derivative of the loss function along that dimension by seeing how much the function changed. The variable `grad` holds the full gradient in the end
+- it often works better to compute the numeric gradient using the **centered difference formula**
+- the numerical gradient has complexity linear in the number of parameters
+
+Computing the gradient with Calculus
+
+- ...
+
+### Gradient Descent
+
+#### Mini-batch gradient descent
+
+- Compute the gradient over **batches** of the training data.
+- The gradient from a mini-batch is a good approximation of the gradient of the full objective
+
+#### Stochastic Gradient Descent (SGD)
+
+- The extreme case of this is a setting where the mini-batch contains only a single example
+
+## Related question/keyword/notes
+
+- CS229: Max margin property in SVM
+- https://stanford.edu/~boyd/cvxbook/
+- https://en.wikipedia.org/wiki/Subderivative
