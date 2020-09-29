@@ -68,7 +68,7 @@ Details about this assignment can be found [on the course webpage](http://cs231n
 #### mSVM loss
 
 - The score function takes the pixels and computes the vector <img src="https://i.upmath.me/svg/f(x_i%2CW)" alt="f(x_i,W)" /> of class scores, which we will abbreviate to <img src="https://i.upmath.me/svg/s" alt="s" /> (short for scores).
-- <img src="https://i.upmath.me/svg/L_i%3D%20%5Csum_%7Bj%E2%89%A0yi%7D%20max(%200%2C%20s_j-s_%7By_i%7D%20%2B%20%5CDelta%20)" alt="L_i= \sum_{j≠yi} max( 0, s_j-s_{y_i} + \Delta )" />
+- <p align="center"> <img src="https://i.upmath.me/svg/L_i%3D%20%5Csum_%7Bj%E2%89%A0yi%7D%20max(%200%2C%20s_j-s_%7By_i%7D%20%2B%20%5CDelta%20)" alt="L_i= \sum_{j≠yi} max( 0, s_j-s_{y_i} + \Delta )" /> </p>
 - In linear classifier:
 
  <img src="https://i.upmath.me/svg/Li%3D%5Csum_%7Bj%E2%89%A0yi%7D%20max(%200%2C%20w%5ET_%7Bj%7Dx_%7Bi%7D-w%5ET_%7By_i%7Dx_i%2B%20%5CDelta%20)" alt="Li=\sum_{j≠yi} max( 0, w^T_{j}x_{i}-w^T_{y_i}x_i+ \Delta )" /> 
