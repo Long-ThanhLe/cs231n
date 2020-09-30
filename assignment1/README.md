@@ -27,28 +27,39 @@ Details about this assignment can be found [on the course webpage](http://cs231n
 - Test set: 10,000
 
 ### Nearest Neighbor Classifier
+
 - Take a test image, compare it to every single one of the training images,
   and predict the label of the closest training image.
 - The choices of distance: <img src="https://i.upmath.me/svg/L1" alt="L1" />, <img src="https://i.upmath.me/svg/L2" alt="L2" />, ...
 
 ### k-Nearest Neighbor Classifier
+
 - Instead of finding the single closest image in the training set, we will find the top **k** closest images and have them vote on the label of the test image.
+
 ### Validation sets for Hyperparameter tuning
+
 - Split training set
 - Cross-validation: Instead of arbitrarily picking the first 1000 data points to be the validation set and rest training set, you can get a better and less noisy estimate of how well a certain value of <img src="https://i.upmath.me/svg/k" alt="k" /> works by iterating over different validation sets and averaging the performance across these.
+
 ### Pros and Cons of Nearest Neighbor classifier
+
 #### Advantage
+
 - Simple to implement and understand
 - Classifier takes no time to train
+
 #### Disadvantage
+
 - Computational cost at test time
 - Distances over high-dimensional spaces can be very counter-intuitive
+
 ## 2. Linear Classification
 
 ### Linear mapping
 
 - <img src="https://i.upmath.me/svg/f(x_i%2CW%2Cb)%3DWx_i%2Bb" alt="f(x_i,W,b)=Wx_i+b" />
 - The single matrix multiplication <img src="https://i.upmath.me/svg/W%7Bx_i%7D" alt="W{x_i}" /> is effectively evaluating 10 separate classifiers in parallel (one for each class), where each classifier is a row of <img src="https://i.upmath.me/svg/W" alt="W" />.
+
 ### Interpreting a linear classifier
 
 **As high-dimensional points**
@@ -60,7 +71,7 @@ Details about this assignment can be found [on the course webpage](http://cs231n
 
 - Each row of <img src="https://i.upmath.me/svg/W" alt="W" /> corresponds to a *template* (or sometimes also called a *prototype*) for one of the classes
 - The score of each class for an image is then obtained by comparing each template with the image using an *inner product* (or *dot product*) one by one to find the one that “fits” best.
-**Bias trick**
+  **Bias trick**
 - <img src="https://i.upmath.me/svg/f(x_i%2CW%2Cb)%3DWx_i%2Bb" alt="f(x_i,W,b)=Wx_i+b" /> -> <img src="https://i.upmath.me/svg/f(x_i%2CW)%3DWx_i" alt="f(x_i,W)=Wx_i" />
 
 ### Loss function
@@ -71,27 +82,26 @@ Details about this assignment can be found [on the course webpage](http://cs231n
 - <p class="aligncenter"> <img src="https://i.upmath.me/svg/L_i%3D%20%5Csum_%7Bj%E2%89%A0yi%7D%20max(%200%2C%20s_j-s_%7By_i%7D%20%2B%20%5CDelta%20)" alt="L_i= \sum_{j≠yi} max( 0, s_j-s_{y_i} + \Delta )" /> </p>
 - In linear classifier:
 
- <img src="https://i.upmath.me/svg/Li%3D%5Csum_%7Bj%E2%89%A0yi%7D%20max(%200%2C%20w%5ET_%7Bj%7Dx_%7Bi%7D-w%5ET_%7By_i%7Dx_i%2B%20%5CDelta%20)" alt="Li=\sum_{j≠yi} max( 0, w^T_{j}x_{i}-w^T_{y_i}x_i+ \Delta )" /> 
+<img src="https://i.upmath.me/svg/Li%3D%5Csum_%7Bj%E2%89%A0yi%7D%20max(%200%2C%20w%5ET_%7Bj%7Dx_%7Bi%7D-w%5ET_%7By_i%7Dx_i%2B%20%5CDelta%20)" alt="Li=\sum_{j≠yi} max( 0, w^T_{j}x_{i}-w^T_{y_i}x_i+ \Delta )" />
 
 <img src="https://i.upmath.me/svg/w_i" alt="w_i" /> is the i_th row of <img src="https://i.upmath.me/svg/W" alt="W" /> reshaped as a column
+
 - The theshold at zero <img src="https://i.upmath.me/svg/max(0%2C-)" alt="max(0,-)" /> function is called **hingle loss**
 - **Squared hingle loss SVM** (L2-SVM): <img src="https://i.upmath.me/svg/max(0%2C-)%5E2" alt="max(0,-)^2" />
 - Regularization:
   - There might be many similar **W** that correctly classify the examples
   - if some parameters **W** correctly classify all examples (so loss is zero for each example), then any multiple of these parameters <img src="https://i.upmath.me/svg/%CE%BBW" alt="λW" /> where <img src="https://i.upmath.me/svg/%CE%BB%3E1" alt="λ&gt;1" /> will also give zero loss because this transformation uniformly stretches all score magnitudes and hence also their absolute differences
   - -> Extending the loss function with a **regularization penalty** <img src="https://i.upmath.me/svg/R(W)" alt="R(W)" />
-  - <img src="https://i.upmath.me/svg/L2" alt="L2" /> penalty: 
+  - <img src="https://i.upmath.me/svg/L2" alt="L2" /> penalty:
 
 <img src="https://i.upmath.me/svg/R(W)%20%3D%20%5Csum_k%5Csum_lW%5E2_%7Bk%2Cl%7D" alt="R(W) = \sum_k\sum_lW^2_{k,l}" />
 
-  - Loss becomes:
-    
+- Loss becomes:
+
 <img src="https://i.upmath.me/svg/L%20%3D%20%5Cfrac%7B1%7D%7BN%7D%5Csum_iL_i%20%2B%20%5Clambda%20R(W)" alt="L = \frac{1}{N}\sum_iL_i + \lambda R(W)" />.
 
-
-  - Max margin property in SVM: **CS229**
-  
-  - Generalization property -> less overfitting
+- Max margin property in SVM: **CS229**
+- Generalization property -> less overfitting
 
 ### Practical Considerations
 
@@ -103,27 +113,29 @@ Details about this assignment can be found [on the course webpage](http://cs231n
 ### Softmax classifier
 
 - Cross-entropy loss:
-  
+
 <img src="https://i.upmath.me/svg/%0A%20%20L_i%20%3D%20-log(%5Cfrac%7Be%5E%7Bf_%7By_i%7D%7D%7D%7B%5Csum_j%20e%5E%7Bf_j%7D%7D)%20%20%3D%20-f_%7By_i%7D%20%2B%20log%5Csum_j%20e%5E%7Bf_j%7D%0A%20%20" alt="
-  L_i = -log(\frac{e^{f_{y_i}}}{\sum_j e^{f_j}})  = -f_{y_i} + log\sum_j e^{f_j}
-  " />
+L_i = -log(\frac{e^{f_{y_i}}}{\sum_j e^{f_j}})  = -f_{y_i} + log\sum_j e^{f_j}
+" />
+
 - <img src="https://i.upmath.me/svg/f_j" alt="f_j" /> is the j-th element of the vector of class scores <img src="https://i.upmath.me/svg/f" alt="f" />
 
 #### Information theory view:
 
 - The cross-entropy between a 'true' distribution <img src="https://i.upmath.me/svg/p" alt="p" /> and an estimated distribution <img src="https://i.upmath.me/svg/q" alt="q" /> is defined as:
-  
+
 <img src="https://i.upmath.me/svg/%0A%20%20H(p%2Cq)%20%3D%20-%5Csum_x%20p(x)%20log%20q(x)%0A%20%20" alt="
-  H(p,q) = -\sum_x p(x) log (q(x))
-  " />
-- The Softmax classifier is hence minimizing the cross-entropy between the estimated class probabilities (<img src="https://i.upmath.me/svg/q%3D%5Cfrac%7Be%5E%7Bf_%7Byi%7D%7D%7D%7B%E2%88%91_j%20e%5E%7Bf_j%7D%7D" alt="q=\frac{e^{f_{y_i}}}{\sum_j e^{f_j}}" /> 
-as seen above) and the “true” distribution, which in this interpretation is the distribution where all probability mass is on the correct class (i.e.<img src="https://i.upmath.me/svg/p%3D%5B0%2C%E2%80%A61%2C%E2%80%A6%2C0%5D" alt="p=[0,…1,…,0]" /> contains a single <img src="https://i.upmath.me/svg/%201" alt=" 1" /> at the <img src="https://i.upmath.me/svg/y_i" alt="y_i" /> <img src="https://i.upmath.me/svg/i-th" alt="i-th" /> position.)
+H(p,q) = -\sum_x p(x) log (q(x))
+" />
+
+- The Softmax classifier is hence minimizing the cross-entropy between the estimated class probabilities (<img src="https://i.upmath.me/svg/q%3D%5Cfrac%7Be%5E%7Bf_%7Byi%7D%7D%7D%7B%E2%88%91_j%20e%5E%7Bf_j%7D%7D" alt="q=\frac{e^{f_{y_i}}}{\sum_j e^{f_j}}" />
+  as seen above) and the “true” distribution, which in this interpretation is the distribution where all probability mass is on the correct class (i.e.<img src="https://i.upmath.me/svg/p%3D%5B0%2C%E2%80%A61%2C%E2%80%A6%2C0%5D" alt="p=[0,…1,…,0]" /> contains a single <img src="https://i.upmath.me/svg/%201" alt=" 1" /> at the <img src="https://i.upmath.me/svg/y_i" alt="y_i" /> <img src="https://i.upmath.me/svg/i-th" alt="i-th" /> position.)
 - Since the cross-entropy can be written in terms of entropy and the Kullback-Leibler divergence as <img src="https://i.upmath.me/svg/H(p%2Cq)%3DH(p)%2BDKL(p%7C%7Cq)" alt="H(p,q)=H(p)+DKL(p||q)" />, and the entropy of the delta function pp is zero, this is also equivalent to minimizing the KL divergence between the two distributions.
 
 #### Probabilistic Interpretation
 
-- We can see 
-<img src="https://i.upmath.me/svg/%5Cfrac%7Be%5E%7Bf_%7By_i%7D%7D%7D%7B%5Csum_j%20e%5E%7Bf_j%7D%7D" alt="\frac{e^{f_{y_i}}}{\sum_j e^{f_j}}" /> as the normalized probability assigned to the correct label <img src="https://i.upmath.me/svg/y_i" alt="y_i" /> given the image <img src="https://i.upmath.me/svg/x_i" alt="x_i" />
+- We can see
+  <img src="https://i.upmath.me/svg/%5Cfrac%7Be%5E%7Bf_%7By_i%7D%7D%7D%7B%5Csum_j%20e%5E%7Bf_j%7D%7D" alt="\frac{e^{f_{y_i}}}{\sum_j e^{f_j}}" /> as the normalized probability assigned to the correct label <img src="https://i.upmath.me/svg/y_i" alt="y_i" /> given the image <img src="https://i.upmath.me/svg/x_i" alt="x_i" />
 - In the probabilistic interpretation, we are therefore minimizing the negative log-likelihood of the correct class, which can be interpreted as performing *Maximum Likelihood Estimation* (MLE)
 - A nice feature of this view is that we can now also interpret the regularization term <img src="https://i.upmath.me/svg/R(W)" alt="R(W)" /> in the full loss function as coming from a Gaussian prior over the weight matrix <img src="https://i.upmath.me/svg/W" alt="W" />, where instead of MLE we are performing the *Maximum a posteriori* (MAP) estimation
 
@@ -176,7 +188,19 @@ Computing the gradient with Calculus
 
 - The extreme case of this is a setting where the mini-batch contains only a single example
 
-## Related question/keyword/notes
+### 4. Backprop
+
+
+### 5. Linear Backprop
+
+
+### 6. Derivatives notes
+
+
+### 7. Efficient Backpropp
+
+
+### Related question/keyword/notes
 
 - CS229: Max margin property in SVM
 - https://stanford.edu/~boyd/cvxbook/
