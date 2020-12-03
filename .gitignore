@@ -1,2 +1,8 @@
 
 .vscode/
+
+assignment3/cs231n/__pycache__/
+
+assignment3/cs231n/classifiers/__pycache__/
+
+*.h5

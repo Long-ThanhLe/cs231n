@@ -151,7 +151,37 @@ class CaptioningRNN(object):
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        # 1
+        initial_hidden_state, cache_1 = affine_forward(features, W_proj, b_proj)
+
+        # 2
+        word_emmbeding, cache_2 = word_embedding_forward(captions_in, W_embed)
+
+        # 3
+        h, cache_3 = rnn_forward(
+            word_emmbeding, 
+            initial_hidden_state,
+            Wx,
+            Wh,
+            b
+        )
+        # 4
+        scores, cache_4 = temporal_affine_forward(h, W_vocab, b_vocab)
+
+        #5
+        loss, dloss_x = temporal_softmax_loss(scores, captions_out, mask)
+
+        # backward 4
+        dh, grads["W_vocab"], grads["b_vocab"] = temporal_affine_backward(dloss_x, cache_4)
+
+        # backward 3 dx, dh0, dWx, dWh, db
+        dword_emmbeding, dinitial_hidden_state, grads["Wx"], grads["Wh"], grads["b"] = rnn_backward(dh, cache_3)
+
+        # backward 2
+        grads["W_embed"] = word_embedding_backward(dword_emmbeding, cache_2)
+
+        # backward 1
+        _, grads["W_proj"], grads["b_proj"] = affine_backward(dinitial_hidden_state, cache_1)
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         ############################################################################
@@ -185,6 +215,7 @@ class CaptioningRNN(object):
           of captions should be the first sampled word, not the <START> token.
         """
         N = features.shape[0]
+        print('N = ', N)
         captions = self._null * np.ones((N, max_length), dtype=np.int32)
 
         # Unpack parameters
@@ -219,7 +250,26 @@ class CaptioningRNN(object):
         ###########################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        D = features.shape[1]
+        print('D = ', D)
+        start_x = np.zeros((N,1), dtype=int)
+        start_x[:,0] = self._start
+
+        initial_hidden_state, _ = affine_forward(features, W_proj, b_proj)
+        x0 , _                  = word_embedding_forward(start_x, W_embed)
+        previous_x = x0
+        h = initial_hidden_state
+        for t in range(max_length):
+            h, _ = rnn_step_forward(
+                previous_x, 
+                h, 
+                Wx, 
+                Wh, 
+                b
+            )
+            scores, _ = temporal_affine_forward(h, W_vocab, b_vocab)
+            captions[np.arange(N), t] = np.argmax(scores[:,0,:], axis=1)
+            previous_x, _ = word_embedding_forward(captions[np.arange(N), t].reshape(N,1), W_embed)
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         ############################################################################
